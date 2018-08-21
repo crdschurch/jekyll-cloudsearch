@@ -12,5 +12,6 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   s.require_paths = ["lib"]
   s.add_dependency 'jekyll'
-  s.add_dependency 'activesupport'
+  s.add_dependency 'aws-sdk-cloudsearchdomain'
+  s.add_dependency 'contentful-management', '~> 1.10.1'
 end
