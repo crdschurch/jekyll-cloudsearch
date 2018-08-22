@@ -67,4 +67,18 @@ describe Jekyll::Cloudsearch::Client do
     expect(@client).to have_received(:upload).once
   end
 
+  it 'should return absolute url' do
+    doc = @site.collections['posts'].docs.first
+    url = doc.send(:url)
+
+    ENV['JEKYLL_ENV'] = 'development'
+    expect(@client.send(:url,doc)).to eq("https://mediaint.crossroads.net#{url}")
+    ENV['JEKYLL_ENV'] = 'int'
+    expect(@client.send(:url,doc)).to eq("https://mediaint.crossroads.net#{url}")
+    ENV['JEKYLL_ENV'] = 'demo'
+    expect(@client.send(:url,doc)).to eq("https://mediademo.crossroads.net#{url}")
+    ENV['JEKYLL_ENV'] = 'production'
+    expect(@client.send(:url,doc)).to eq("https://media.crossroads.net#{url}")
+  end
+
 end

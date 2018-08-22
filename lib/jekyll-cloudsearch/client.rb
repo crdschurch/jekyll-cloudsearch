@@ -35,7 +35,7 @@ module Jekyll
           fields: {
             title: doc.data.dig('title'),
             content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
-            link: doc.url,
+            link: url(doc),
             type: 'MediaResource'
           }
         })
@@ -48,6 +48,16 @@ module Jekyll
       end
 
       private
+
+        def url(doc)
+          env = case ENV['JEKYLL_ENV']
+            when 'production', 'prod' then ''
+            when 'demo' then 'demo'
+            when 'development', 'int' then 'int'
+            else 'int'
+          end
+          "https://media#{env}.crossroads.net#{doc.url}"
+        end
 
         def uid(doc)
           "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.id}"
