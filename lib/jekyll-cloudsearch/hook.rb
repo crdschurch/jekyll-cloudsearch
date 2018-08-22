@@ -1,12 +1,19 @@
-@docs = []
-@client = Jekyll::Cloudsearch::Client.new
+enabled = ARGV.include?('--cloudsearch')
 
-Jekyll::Hooks.register :documents, :post_render do |doc|
-  @client.add_document(doc)
+if enabled
+  @docs = []
+  @client = Jekyll::Cloudsearch::Client.new
+  Jekyll::Hooks.register :documents, :post_render do |doc|
+    @client.add_document(doc)
+  end
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
-  @client.instance_variable_set('@site', site)
-  resp = @client.run
-  Jekyll.logger.info('AWS Cloudsearch:', resp)
+  if enabled
+    @client.instance_variable_set('@site', site)
+    resp = @client.run
+    Jekyll.logger.info('AWS Cloudsearch:', resp)
+  else
+    Jekyll.logger.info('AWS Cloudsearch:', 'disabled. Enable with -- --cloudsearch')
+  end
 end

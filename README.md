@@ -12,6 +12,14 @@ Add the following to your `Gemfile` and bundle...
 gem "jekyll-cloudsearch", "~> 0.0.1", git: 'https://github.com/crdschurch/jekyll-cloudsearch.git'
 ```
 
+## Usage
+
+`jekyll-cloudsearch` builds the search index automatically for all rendered collections, when enabled (NOTE: it is disabled by default). You can enable this functionality by passing the following flag to your build command...
+
+```
+bundle exec jekyll build -- --cloudsearch
+```
+
 ## Environment Variables
 
 The following environment variables are required. Please make sure they are exported to the same scope in which your Jekyll commands are run.
