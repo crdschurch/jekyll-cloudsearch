@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/crdschurch/jekyll-cloudsearch.svg?branch=master)](https://travis-ci.org/crdschurch/jekyll-cloudsearch)
 
-`jekyll-cloudsearch` is a Jekyll plugin that publishes site content to AWS Cloudsearch.
+`jekyll-cloudsearch` is a Jekyll plugin that publishes site content to AWS Cloudsearch. It assumes content is aggregated from Contentful and stored as collection objects within a Jekyll instance.
 
 ## Installation
 
@@ -24,10 +24,12 @@ bundle exec jekyll build -- --cloudsearch
 
 The following environment variables are required. Please make sure they are exported to the same scope in which your Jekyll commands are run.
 
-| Name | Description | Default |
-| ----- | ------ | ------- |
-| `CONTENTFUL_MANAGEMENT_TOKEN` | Access token for Contentful's Management API | |
-| `CONTENTFUL_SPACE_ID` | ID specifying Contentful Space | |
+| Name | Description |
+| ----- | ------ |
+| `CONTENTFUL_MANAGEMENT_ACCESS_TOKEN` | Access token for Contentful's Management API |
+| `CONTENTFUL_SPACE_ID` | Contentful Space ID |
+| `AWS_CLOUDSEARCH_ENDPOINT` | Search endpoint for Cloudsearch domain |
+| `AWS_CLOUDSEARCH_BASE_URL` | Base URL for all documents passed to Cloudsearch |
 
 ## License
 

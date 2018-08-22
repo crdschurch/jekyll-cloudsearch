@@ -50,13 +50,7 @@ module Jekyll
       private
 
         def url(doc)
-          env = case ENV['JEKYLL_ENV']
-            when 'production', 'prod' then ''
-            when 'demo' then 'demo'
-            when 'development', 'int' then 'int'
-            else 'int'
-          end
-          "https://media#{env}.crossroads.net#{doc.url}"
+          "#{ENV['AWS_CLOUDSEARCH_BASE_URL']}#{doc.url}"
         end
 
         def uid(doc)
@@ -68,7 +62,7 @@ module Jekyll
         end
 
         def management
-          @management ||= ::Contentful::Management::Client.new(ENV['CONTENTFUL_MANAGEMENT_TOKEN'])
+          @management ||= ::Contentful::Management::Client.new(ENV['CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'])
         end
 
         def space
@@ -76,7 +70,7 @@ module Jekyll
         end
 
         def aws
-          @aws ||= ::Aws::CloudSearchDomain::Client.new(endpoint: "https://#{ENV['CRDS_AWS_CSENDPOINT']}")
+          @aws ||= ::Aws::CloudSearchDomain::Client.new(endpoint: "https://#{ENV['AWS_CLOUDSEARCH_ENDPOINT']}")
         end
 
     end
