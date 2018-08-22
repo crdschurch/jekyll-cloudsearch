@@ -1,3 +1,8 @@
+require 'nokogiri'
+require 'aws-sdk-cloudsearchdomain'
+require 'contentful/management'
+require 'json'
 require 'jekyll'
+require 'jekyll-cloudsearch/client'
 require 'jekyll-cloudsearch/hook'
 require 'jekyll-cloudsearch/version'

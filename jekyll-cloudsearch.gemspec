@@ -13,5 +13,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.add_dependency 'jekyll'
   s.add_dependency 'aws-sdk-cloudsearchdomain'
+  s.add_dependency 'nokogiri'
   s.add_dependency 'contentful-management', '~> 1.10.1'
 end
