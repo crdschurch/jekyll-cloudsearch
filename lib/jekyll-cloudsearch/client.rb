@@ -62,7 +62,7 @@ module Jekyll
         end
 
         def management
-          @management ||= ::Contentful::Management::Client.new(ENV['CONTENTFUL_MANAGEMENT_ACCESS_TOKEN'])
+          @management ||= ::Contentful::Management::Client.new(ENV['CONTENTFUL_MANAGEMENT_TOKEN'])
         end
 
         def space

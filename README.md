@@ -26,8 +26,11 @@ The following environment variables are required. Please make sure they are expo
 
 | Name | Description |
 | ----- | ------ |
-| `CONTENTFUL_MANAGEMENT_ACCESS_TOKEN` | Access token for Contentful's Management API |
+| `CONTENTFUL_MANAGEMENT_TOKEN` | Access token for Contentful's Management API |
 | `CONTENTFUL_SPACE_ID` | Contentful Space ID |
+| `AWS_ACCESS_KEY_ID` | AWS access key |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key |
+| `AWS_REGION` | AWS region |
 | `AWS_CLOUDSEARCH_ENDPOINT` | Search endpoint for Cloudsearch domain |
 | `AWS_CLOUDSEARCH_BASE_URL` | Base URL for all documents passed to Cloudsearch |
 
