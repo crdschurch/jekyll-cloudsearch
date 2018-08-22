@@ -8,8 +8,7 @@ module Jekyll
         @docs = []
       end
 
-      def perform
-        build
+      def run
         write
         upload
       end
@@ -25,7 +24,7 @@ module Jekyll
       def upload
         aws.upload_documents({
           content_type: "application/json",
-          documents: @docs.to_json
+          documents: (deletions + @docs).to_json
         })
       end
 
@@ -35,14 +34,14 @@ module Jekyll
           type: 'add',
           fields: {
             title: doc.data.dig('title'),
-            content: Nokogiri::HTML(doc.content, &:noblanks).text,
+            content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
             link: doc.url,
             type: 'MediaResource'
           }
         })
       end
 
-      def get_deletions
+      def deletions
         space.entries.all.select{|e| !e.published? || e.archived? }.collect do |doc|
           { id: uid(doc), type: 'delete' }
         end
@@ -59,7 +58,7 @@ module Jekyll
         end
 
         def management
-          @management ||= Contentful::Management::Client.new(ENV['CONTENTFUL_MANAGEMENT_TOKEN'])
+          @management ||= ::Contentful::Management::Client.new(ENV['CONTENTFUL_MANAGEMENT_TOKEN'])
         end
 
         def space
@@ -67,7 +66,7 @@ module Jekyll
         end
 
         def aws
-          @aws ||= Aws::CloudSearchDomain::Client.new(endpoint: "https://#{ENV['CRDS_AWS_CSENDPOINT']}")
+          @aws ||= ::Aws::CloudSearchDomain::Client.new(endpoint: "https://#{ENV['CRDS_AWS_CSENDPOINT']}")
         end
 
     end

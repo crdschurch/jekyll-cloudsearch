@@ -37,7 +37,7 @@ describe Jekyll::Cloudsearch::Client do
 
   it 'should return all unpublished entries' do
     VCR.use_cassette 'cfl/entries' do
-      entries = @client.get_deletions
+      entries = @client.deletions
       expect(entries.all?{|e| e[:type] == 'delete' }).to be(true)
     end
   end
@@ -57,6 +57,14 @@ describe Jekyll::Cloudsearch::Client do
     expect(@client.docs).to_not be_empty
     expect(@client.docs.first.keys).to match_array([:id, :type, :fields])
     expect(@client.docs.first[:fields].keys).to match_array([:title, :content, :link, :type])
+  end
+
+  it 'should write and upload' do
+    allow(@client).to receive(:write)
+    allow(@client).to receive(:upload)
+    @client.run
+    expect(@client).to have_received(:write).once
+    expect(@client).to have_received(:upload).once
   end
 
 end

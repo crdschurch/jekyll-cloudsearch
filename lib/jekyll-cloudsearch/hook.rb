@@ -7,6 +7,6 @@ end
 
 Jekyll::Hooks.register :site, :post_write do |site|
   @client.instance_variable_set('@site', site)
-  resp = @client.perform
+  resp = @client.run
   Jekyll.logger.info('AWS Cloudsearch:', resp)
 end
