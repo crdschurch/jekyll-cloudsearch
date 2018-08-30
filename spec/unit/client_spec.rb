@@ -35,7 +35,7 @@ describe Jekyll::Cloudsearch::Client do
     end
   end
 
-  it 'should return all unpublished entries' do
+  it 'should return deletions' do
     VCR.use_cassette 'cfl/entries' do
       entries = @client.deletions
       expect(entries.all?{|e| e[:type] == 'delete' }).to be(true)
@@ -72,6 +72,37 @@ describe Jekyll::Cloudsearch::Client do
     url = doc.send(:url)
     ENV['AWS_CLOUDSEARCH_BASE_URL'] = 'https://mediaint.crossroads.net'
     expect(@client.send(:url,doc)).to eq("https://mediaint.crossroads.net#{url}")
+  end
+
+  it 'should return cache directory' do
+    base = File.expand_path File.join(@site.config.dig('source'), 'tmp')
+    expect(@client.send(:cache_dir)).to eq(base)
+  end
+
+  it 'should return list of ids from manifest' do
+    manifest = @client.send(:manifest)
+    expect(manifest).to be_a(Array)
+    expect(manifest.all?{|id| id.match(/CF_[a-zA-Z0-9]*_[a-zA-Z0-9]/) }).to be_truthy
+  end
+
+  it 'should return manifest file' do
+    file = @client.send(:manifest_file)
+    expect(file).to include('spec/dummy/tmp/cloudsearch-20180827.json')
+  end
+
+  it 'should return stale_ids' do
+    @client.instance_variable_set('@docs', %w(abc def).collect{|i| OpenStruct.new(id: i)})
+    allow(@client).to receive(:manifest).and_return(%w(abc def ghi))
+    stale_ids = @client.send(:stale_ids)
+    expect(stale_ids).to match_array(['ghi'])
+  end
+
+  it 'should return unpublished ids' do
+    VCR.use_cassette 'cfl/entries' do
+      unpublished = @client.send(:unpublished_ids)
+      expect(unpublished).to be_a(Array)
+      expect(unpublished).to include('CF_p9oq1ve41d7r_6KiG75hCPC8K8gS0gSeIKG')
+    end
   end
 
 end

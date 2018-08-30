@@ -42,12 +42,42 @@ module Jekyll
       end
 
       def deletions
-        space.entries.all.select{|e| !e.published? || e.archived? }.collect do |doc|
-          { id: uid(doc), type: 'delete' }
+        (stale_ids + unpublished_ids).collect do |id|
+          { id: id, type: 'delete' }
         end
       end
 
       private
+
+        def manifest
+          if manifest_file.nil?
+            []
+          else
+            JSON.parse(File.read(manifest_file)).collect{|c| c.dig('id')}
+          end
+        end
+
+        def manifest_file
+          file = Dir.glob("#{cache_dir}/cloudsearch-*").max_by {|f|
+            timestamp = File.basename(f).sub(/cloudsearch-([0-9]*).json/,'\1')
+            Date.parse(timestamp).to_time.to_i rescue 0
+          }
+        end
+
+        def unpublished_ids
+          unpublished_ids = space.entries.all.collect{|e|
+            uid(e) if !e.published? || e.archived?
+          }.compact
+        end
+
+        def stale_ids
+          if manifest.empty?
+            []
+          else
+            new_ids = @docs.collect{|d|d.dig(:id)}
+            stale_ids = manifest - new_ids
+          end
+        end
 
         def url(doc)
           "#{ENV['AWS_CLOUDSEARCH_BASE_URL']}#{doc.url}"
@@ -71,6 +101,16 @@ module Jekyll
 
         def aws
           @aws ||= ::Aws::CloudSearchDomain::Client.new(endpoint: "https://#{ENV['AWS_CLOUDSEARCH_ENDPOINT']}")
+        end
+
+        def cache_dir
+          @cache_dir ||= begin
+            if ENV['NETLIFY_BUILD_CACHE'].nil?
+              File.join(site.source, 'tmp')
+            else
+              File.join(ENV['NETLIFY_CACHE_DIR'], 'cache')
+            end
+          end
         end
 
     end
