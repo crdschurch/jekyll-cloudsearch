@@ -29,16 +29,18 @@ module Jekyll
       end
 
       def add_document(doc)
-        @docs.push({
-          id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
-          type: 'add',
-          fields: {
-            title: doc.data.dig('title'),
-            content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
-            link: url(doc),
-            type: 'MediaResource'
-          }
-        })
+        if doc.data.dig('search_excluded') != true
+          @docs.push({
+            id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
+            type: 'add',
+            fields: {
+              title: doc.data.dig('title'),
+              content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
+              link: url(doc),
+              type: 'MediaResource'
+            }
+          })
+        end
       end
 
       def deletions
