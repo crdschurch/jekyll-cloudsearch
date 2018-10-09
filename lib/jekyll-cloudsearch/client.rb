@@ -29,7 +29,7 @@ module Jekyll
       end
 
       def add_document(doc)
-        if doc.data.dig('search_excluded') != true
+        unless doc.data.dig('search_excluded')
           @docs.push({
             id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
             type: 'add',
