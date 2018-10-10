@@ -59,10 +59,12 @@ describe Jekyll::Cloudsearch::Client do
     expect(@client.docs.first[:fields].keys).to match_array([:title, :content, :link, :type])
   end
 
-  it 'should not push search excluded documents onto the docs array' do
-    excluded_doc = @site.collections['posts'].docs.select{ |item| item.data.dig('search_excluded') == true }.first
-    @client.add_document(excluded_doc)
-    expect(@client.docs.include?(excluded_doc)).to eq(false)
+  it 'should push search excluded documents onto the excluded docs array' do
+    doc = @site.collections['posts'].docs.select{ |item| item.data.dig('search_excluded') == true }.first
+    doc_id = "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}"
+    @client.add_document(doc)
+    expect(@client.docs.include?(doc)).to eq(false)
+    expect(@client.search_excluded_docs.include?("id": doc_id)).to eq(true)
   end
 
   it 'should write and upload' do
