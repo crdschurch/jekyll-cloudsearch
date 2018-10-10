@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jekyll-cloudsearch (0.0.2)
+    jekyll-cloudsearch (0.0.3)
       aws-sdk-cloudsearchdomain
       contentful-management (~> 1.10.1)
       jekyll
