@@ -52,7 +52,7 @@ describe Jekyll::Cloudsearch::Client do
   end
 
   it 'should push document onto the docs array' do
-    doc = @site.collections['posts'].docs.first
+    doc = @site.collections['posts'].docs.select{ |item| item.data.dig('search_excluded') == nil}.first
     @client.add_document(doc)
     expect(@client.docs).to_not be_empty
     expect(@client.docs.first.keys).to match_array([:id, :type, :fields])
