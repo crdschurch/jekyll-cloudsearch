@@ -2,10 +2,11 @@ module Jekyll
   module Cloudsearch
     class Client
 
-      attr_accessor :filename, :site, :docs
+      attr_accessor :filename, :site, :docs, :search_excluded_docs
 
       def initialize
         @docs = []
+        @search_excluded_docs = []
       end
 
       def run
@@ -29,20 +30,26 @@ module Jekyll
       end
 
       def add_document(doc)
-        @docs.push({
-          id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
-          type: 'add',
-          fields: {
-            title: doc.data.dig('title'),
-            content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
-            link: url(doc),
-            type: 'MediaResource'
-          }
-        })
+        if doc.data.dig('search_excluded')
+          @search_excluded_docs.push({
+            id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}"
+          })
+        else
+          @docs.push({
+            id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
+            type: 'add',
+            fields: {
+              title: doc.data.dig('title'),
+              content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
+              link: url(doc),
+              type: 'MediaResource'
+            }
+          })
+        end
       end
 
       def deletions
-        (stale_ids + unpublished_ids).collect do |id|
+        (stale_ids + unpublished_ids + @search_excluded_docs).collect do |id|
           { id: id, type: 'delete' }
         end
       end
