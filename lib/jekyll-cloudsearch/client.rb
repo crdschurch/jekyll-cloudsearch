@@ -2,11 +2,11 @@ module Jekyll
   module Cloudsearch
     class Client
 
-      attr_accessor :filename, :site, :docs, :search_excluded_docs
+      attr_accessor :filename, :site, :docs, :search_excluded_ids
 
       def initialize
         @docs = []
-        @search_excluded_docs = []
+        @search_excluded_ids = []
       end
 
       def run
@@ -31,9 +31,7 @@ module Jekyll
 
       def add_document(doc)
         if doc.data.dig('search_excluded')
-          @search_excluded_docs.push({
-            id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}"
-          })
+          @search_excluded_ids.push("CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}")
         else
           @docs.push({
             id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
@@ -49,7 +47,7 @@ module Jekyll
       end
 
       def deletions
-        (stale_ids + unpublished_ids + @search_excluded_docs).collect do |id|
+        (stale_ids + unpublished_ids + @search_excluded_ids).collect do |id|
           { id: id, type: 'delete' }
         end
       end
