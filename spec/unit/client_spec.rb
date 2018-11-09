@@ -67,6 +67,23 @@ describe Jekyll::Cloudsearch::Client do
     expect(@client.search_excluded_ids.include?(doc_id)).to eq(true)
   end
 
+  context 'for collections with output=false' do
+
+    before do
+      @site.documents.each do |doc|
+        @client.add_document(doc)
+      end
+    end
+
+    it 'should exclude all docs' do
+      indexed_titles = @client.docs.collect{|d| d.dig(:fields, :title) }
+      @site.collections['promos'].collect(&:title).each do |title|
+        expect(indexed_titles).to_not include(title)
+      end
+    end
+
+  end
+
   it 'should write and upload' do
     allow(@client).to receive(:write)
     allow(@client).to receive(:upload)

@@ -1,7 +1,6 @@
 enabled = ARGV.include?('--cloudsearch')
 
 if enabled
-  @docs = []
   @client = Jekyll::Cloudsearch::Client.new
   Jekyll::Hooks.register :documents, :post_render do |doc|
     @client.add_document(doc)
