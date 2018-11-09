@@ -1,0 +1,9 @@
+collections_dir: collections
+
+collections:
+  posts:
+    output: true
+    permalink: /:collection/:title
+    filename: "{{ published_at | date: '%Y-%m-%d' }}-{{ slug }}"
+  promos:
+    output: false

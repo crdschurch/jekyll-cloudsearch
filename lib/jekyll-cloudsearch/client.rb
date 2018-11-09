@@ -30,7 +30,7 @@ module Jekyll
       end
 
       def add_document(doc)
-        if doc.data.dig('search_excluded')
+        if doc.data.dig('search_excluded') || ! doc.collection.metadata.dig('output')
           @search_excluded_ids.push("CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}")
         else
           @docs.push({
