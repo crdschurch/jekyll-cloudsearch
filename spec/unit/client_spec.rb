@@ -130,4 +130,13 @@ describe Jekyll::Cloudsearch::Client do
     end
   end
 
+  it 'should respect jekyll config when building document content' do
+    doc = @site.collections['posts'].docs.first
+    doc.site.config['cloudsearch'] = { 'post' => ['lead_text', 'body'] }
+    doc.data['lead_text'] = 'parse this content too!'
+    @client.add_document(doc)
+    json = @client.docs.select{|document| document.dig(:id).include?(doc.data.dig('id')) }.try(:first)
+    expect(json.dig(:fields, :content)).to include(doc.data['lead_text'])
+  end
+
 end
