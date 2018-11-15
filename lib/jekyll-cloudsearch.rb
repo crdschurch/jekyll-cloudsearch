@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'active_support/core_ext/string'
 require 'aws-sdk-cloudsearchdomain'
 require 'contentful/management'
 require 'json'

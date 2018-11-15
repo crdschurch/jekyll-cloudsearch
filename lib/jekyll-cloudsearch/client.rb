@@ -7,6 +7,8 @@ module Jekyll
       def initialize
         @docs = []
         @search_excluded_ids = []
+        @markdown = Jekyll::Converters::Markdown.new
+        @markdown.instance_variable_set('@config', { 'markdown' => 'kramdown' })
       end
 
       def run
@@ -33,12 +35,20 @@ module Jekyll
         if doc.data.dig('search_excluded') || ! doc.collection.metadata.dig('output')
           @search_excluded_ids.push("CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}")
         else
+
+          fields = doc.site.config.dig('cloudsearch', doc.collection.label.singularize)
+          if fields.nil?
+            content = doc.content
+          else
+            content = @markdown.convert(fields.collect{|f| doc.data.dig(f).try(:strip) }.compact.reverse.join("\n"))
+          end
+
           @docs.push({
             id: "CF_#{ENV['CONTENTFUL_SPACE_ID']}_#{doc.data.dig('id')}",
             type: 'add',
             fields: {
               title: doc.data.dig('title'),
-              content: ::Nokogiri::HTML(doc.content, &:noblanks).text,
+              content: ::Nokogiri::HTML(content, &:noblanks).text,
               link: url(doc),
               type: 'MediaResource'
             }

@@ -20,6 +20,16 @@ gem "jekyll-cloudsearch", "~> 0.0.1", git: 'https://github.com/crdschurch/jekyll
 bundle exec jekyll build -- --cloudsearch
 ```
 
+By default, `jekyll-cloudsearch` will index the rendered content for every document who's collection is marked for output. If you need to index fields within your document's data object that are not reflected in that document's content string, you can add the following convention to your project's `_config.yml` file, where "article" represents the singularized name for your collection...
+
+```
+cloudsearch:
+  article:
+    - intro_text
+    - body
+    - footer_text
+```
+
 ## Environment Variables
 
 The following environment variables are required. Please make sure they are exported to the same scope in which your Jekyll commands are run.
