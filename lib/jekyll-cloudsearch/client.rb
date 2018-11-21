@@ -17,7 +17,7 @@ module Jekyll
       end
 
       def write
-        base = File.join(site.config.dig('source'), 'tmp')
+        base = File.join(site.config.dig('source'), '.aws')
         FileUtils.mkdir_p(base)
         File.open(File.join(base, filename),"w") do |f|
           f.puts(@docs.to_json)
@@ -121,7 +121,7 @@ module Jekyll
         def cache_dir
           @cache_dir ||= begin
             if ENV['NETLIFY_BUILD_CACHE'].nil?
-              File.join(site.source, 'tmp')
+              File.join(site.source, '.aws')
             else
               File.join(ENV['NETLIFY_CACHE_DIR'], 'cache')
             end

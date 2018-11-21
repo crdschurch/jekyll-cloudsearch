@@ -13,7 +13,7 @@ describe Jekyll::Cloudsearch::Client do
   end
 
   it 'should write a CSV file' do
-    base = File.join(@site.config.dig('source'), 'tmp')
+    base = File.join(@site.config.dig('source'), '.aws')
     FileUtils.mkdir_p(base)
     filename = 'cloudsearch-test.json'
     path = File.join(base, filename)

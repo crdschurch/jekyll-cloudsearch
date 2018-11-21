@@ -1,3 +1,5 @@
 .envrc
 tmp
 !spec/dummy/tmp
+.aws
+!spec/dummy/.aws
