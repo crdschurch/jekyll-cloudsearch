@@ -100,7 +100,7 @@ describe Jekyll::Cloudsearch::Client do
   end
 
   it 'should return cache directory' do
-    base = File.expand_path File.join(@site.config.dig('source'), 'tmp')
+    base = File.expand_path File.join(@site.config.dig('source'), '.aws')
     expect(@client.send(:cache_dir)).to eq(base)
   end
 
@@ -112,7 +112,7 @@ describe Jekyll::Cloudsearch::Client do
 
   it 'should return manifest file' do
     file = @client.send(:manifest_file)
-    expect(file).to include('spec/dummy/tmp/cloudsearch-20180827.json')
+    expect(file).to include('spec/dummy/.aws/cloudsearch-20180827.json')
   end
 
   it 'should return stale_ids' do
