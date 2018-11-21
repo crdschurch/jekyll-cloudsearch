@@ -9,7 +9,7 @@
 Add the following to your `Gemfile` and bundle...
 
 ```ruby
-gem "jekyll-cloudsearch", "~> 0.0.1", git: 'https://github.com/crdschurch/jekyll-cloudsearch.git'
+gem "jekyll-cloudsearch", "~> 0.2.0", git: 'https://github.com/crdschurch/jekyll-cloudsearch.git'
 ```
 
 ## Usage
