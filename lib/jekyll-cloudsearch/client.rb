@@ -17,14 +17,17 @@ module Jekyll
       end
 
       def write
-        base = File.join(site.config.dig('source'), '.aws')
-        FileUtils.mkdir_p(base)
-        File.open(File.join(base, filename),"w") do |f|
+        path = File.join(local_cache_dir, filename)
+        FileUtils.mkdir_p(local_cache_dir)
+        Jekyll.logger.info('AWS Cloudsearch:', "Writing #{path}...")
+        File.open(path,"w") do |f|
           f.puts(@docs.to_json)
         end
+        persist_to_build_cache!
       end
 
       def upload
+        Jekyll.logger.info('AWS Cloudsearch:', "Uploading documents to AWS...")
         aws.upload_documents({
           content_type: "application/json",
           documents: (deletions + @docs).to_json
@@ -50,7 +53,7 @@ module Jekyll
               title: doc.data.dig('title'),
               content: ::Nokogiri::HTML(content, &:noblanks).text,
               link: url(doc),
-              type: 'MediaResource'
+              type: doc.data.dig('index_type') || 'MediaResource'
             }
           })
         end
@@ -59,6 +62,15 @@ module Jekyll
       def deletions
         (stale_ids + unpublished_ids + @search_excluded_ids).collect do |id|
           { id: id, type: 'delete' }
+        end
+      end
+
+      def persist_to_build_cache!
+        if local_cache_dir != build_cache_dir
+          src = File.join(local_cache_dir, filename)
+          dest = File.join(build_cache_dir, filename)
+          FileUtils.mkdir_p(build_cache_dir)
+          FileUtils.cp(src, dest)
         end
       end
 
@@ -73,7 +85,7 @@ module Jekyll
         end
 
         def manifest_file
-          file = Dir.glob("#{cache_dir}/cloudsearch-*").max_by {|f|
+          file = Dir.glob("#{build_cache_dir}/cloudsearch-*").max_by {|f|
             timestamp = File.basename(f).sub(/cloudsearch-([0-9]*).json/,'\1')
             Date.parse(timestamp).to_time.to_i rescue 0
           }
@@ -118,14 +130,12 @@ module Jekyll
           @aws ||= ::Aws::CloudSearchDomain::Client.new(endpoint: "https://#{ENV['AWS_CLOUDSEARCH_ENDPOINT']}")
         end
 
-        def cache_dir
-          @cache_dir ||= begin
-            if ENV['NETLIFY_BUILD_CACHE'].nil?
-              File.join(site.source, '.aws')
-            else
-              File.join(ENV['NETLIFY_CACHE_DIR'], 'cache')
-            end
-          end
+        def local_cache_dir
+          File.join(site.source, '.aws')
+        end
+
+        def build_cache_dir
+          ENV['NETLIFY_CACHE_DIR'] || local_cache_dir
         end
 
     end

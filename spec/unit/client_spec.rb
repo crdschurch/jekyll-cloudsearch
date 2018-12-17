@@ -12,6 +12,10 @@ describe Jekyll::Cloudsearch::Client do
     @client.instance_variable_set('@site', @site)
   end
 
+  after do
+    ENV['NETLIFY_CACHE_DIR'] = nil # reset
+  end
+
   it 'should write a CSV file' do
     base = File.join(@site.config.dig('source'), '.aws')
     FileUtils.mkdir_p(base)
@@ -68,7 +72,6 @@ describe Jekyll::Cloudsearch::Client do
   end
 
   context 'for collections with output=false' do
-
     before do
       @site.documents.each do |doc|
         @client.add_document(doc)
@@ -81,7 +84,6 @@ describe Jekyll::Cloudsearch::Client do
         expect(indexed_titles).to_not include(title)
       end
     end
-
   end
 
   it 'should write and upload' do
@@ -99,9 +101,28 @@ describe Jekyll::Cloudsearch::Client do
     expect(@client.send(:url,doc)).to eq("https://mediaint.crossroads.net#{url}")
   end
 
-  it 'should return cache directory' do
+  it 'should return local cache directory' do
     base = File.expand_path File.join(@site.config.dig('source'), '.aws')
-    expect(@client.send(:cache_dir)).to eq(base)
+    expect(@client.send(:local_cache_dir)).to eq(base)
+  end
+
+  it 'should return build cache directory' do
+    expect(@client.send(:build_cache_dir)).to eq(@client.send(:local_cache_dir))
+    ENV['NETLIFY_CACHE_DIR'] = '/tmp'
+    expect(@client.send(:build_cache_dir)).to eq('/tmp')
+  end
+
+  it 'should copy manifest to build cache directory' do
+    base = File.join(@site.config.dig('source'), '.aws')
+    filename = 'cloudsearch-test.json'
+    path = File.join(base, filename)
+    ENV['NETLIFY_CACHE_DIR'] = File.join(base, 'cache')
+    cached_path = File.join(ENV['NETLIFY_CACHE_DIR'], filename)
+
+    FileUtils.rm path if File.exists?(path)
+    @client.instance_variable_set('@filename', filename)
+    @client.write
+    expect(File.exists?(path)).to eq(true)
   end
 
   it 'should return list of ids from manifest' do
