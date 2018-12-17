@@ -13,7 +13,5 @@ Jekyll::Hooks.register :site, :post_write do |site|
   if enabled
     resp = @client.upload
     Jekyll.logger.info('AWS Cloudsearch:', resp)
-  else
-    Jekyll.logger.info('AWS Cloudsearch:', 'disabled. Enable with -- --cloudsearch')
   end
 end
