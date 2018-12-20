@@ -8,9 +8,9 @@ if enabled
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
-  @client.instance_variable_set('@site', site)
-  @client.write
   if enabled
+    @client.instance_variable_set('@site', site)
+    @client.write
     resp = @client.upload
     Jekyll.logger.info('AWS Cloudsearch:', resp)
   end
