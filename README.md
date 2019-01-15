@@ -37,7 +37,9 @@ The following environment variables are required. Please make sure they are expo
 | Name | Description |
 | ----- | ------ |
 | `CONTENTFUL_MANAGEMENT_TOKEN` | Access token for Contentful's Management API |
+| `CONTENTFUL_ACCESS_TOKEN` | Access token for Contentful's content delivery 
 | `CONTENTFUL_SPACE_ID` | Contentful Space ID |
+| `CONTENTFUL_ENV` | Contentful Environment ID |
 | `AWS_ACCESS_KEY_ID` | AWS access key |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret key |
 | `AWS_REGION` | AWS region |
