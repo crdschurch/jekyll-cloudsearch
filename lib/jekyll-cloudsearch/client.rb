@@ -111,7 +111,7 @@ module Jekyll
         end
 
         def space
-          @space ||= management.spaces.find(ENV['CONTENTFUL_SPACE_ID'])
+          @space ||= management.environments(ENV['CONTENTFUL_SPACE_ID']).find(ENV['CONTENTFUL_ENV'] || 'master')
         end
 
         def aws
