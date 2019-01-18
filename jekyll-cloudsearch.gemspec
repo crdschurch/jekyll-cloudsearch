@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport'
   s.add_dependency 'aws-sdk-cloudsearchdomain'
   s.add_dependency 'nokogiri'
-  s.add_dependency 'contentful-management', '~> 1.10.1'
+  s.add_dependency 'contentful-management', '~> 2.6'
 end

@@ -29,9 +29,9 @@ describe Jekyll::Cloudsearch::Client do
     expect(@client.send(:management)).to be_instance_of(Contentful::Management::Client)
   end
 
-  it 'should return CFL space instance' do
+  it 'should return CFL environment instance' do
     VCR.use_cassette 'cfl/space' do
-      expect(@client.send(:space)).to be_instance_of(Contentful::Management::Space)
+      expect(@client.send(:space)).to be_instance_of(Contentful::Management::Environment)
     end
   end
 
@@ -126,7 +126,7 @@ describe Jekyll::Cloudsearch::Client do
     VCR.use_cassette 'cfl/entries' do
       unpublished = @client.send(:unpublished_ids)
       expect(unpublished).to be_a(Array)
-      expect(unpublished).to include('CF_p9oq1ve41d7r_6KiG75hCPC8K8gS0gSeIKG')
+      expect(unpublished).to include('CF_y3a9myzsdjan_Dn7QV1eJRQoeYy6OKw60m')
     end
   end
 
